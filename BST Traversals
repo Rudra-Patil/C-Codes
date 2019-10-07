@@ -1,0 +1,196 @@
+#include<iostream>
+#include<stdio.h>
+#include<conio.h>
+using namespace std;  
+  
+struct node 
+{ 
+    int data; 
+    struct node *left, *right; 
+}; 
+  
+struct node *newNode(int item) 
+{ 
+    struct node *temp =  new node; 
+    temp->data = item; 
+    temp->left = temp->right = NULL; 
+    return temp; 
+}
+  
+void inorder(struct node *root) 
+{ 
+    if (root != NULL) 
+    { 
+        inorder(root->left); 
+        cout<<" "<<root->data; 
+        inorder(root->right); 
+    } 
+} 
+
+void preorder(struct node *root) 
+{ 
+    if (root != NULL) 
+    { 
+        cout<<" "<<root->data; 
+        preorder(root->left); 
+        preorder(root->right); 
+    }
+} 
+
+void postorder(struct node *root) 
+{ 
+    if (root != NULL) 
+    { 
+        postorder(root->left); 
+        postorder(root->right);
+        cout<<" "<<root->data;  
+    } 
+} 
+  
+struct node* insert(struct node* node, int data) 
+{ 
+    if (node == NULL) return newNode(data); 
+  
+    if (data < node->data) 
+        node->left  = insert(node->left, data); 
+    else
+        node->right = insert(node->right, data); 
+        
+    return node; 
+} 
+  
+
+struct node * minValueNode(struct node* node) 
+{ 
+    struct node* temp = node; 
+  
+    while (temp && temp->left != NULL) 
+        temp = temp->left; 
+  
+    return temp; 
+}
+ 
+struct node * maxValueNode(struct node* node) 
+{ 
+    struct node* temp = node; 
+  
+    while (temp && temp->right != NULL) 
+        temp = temp->right; 
+  
+    return temp; 
+}
+
+node *find(node *nodes, int data)
+{
+    if(nodes==NULL)
+    {
+        return NULL;
+    }
+    if(data > nodes->data)
+        return find(nodes->right,data);
+    else if(data < nodes->data)
+        return find(nodes->left,data);
+    else
+        return nodes;
+}
+  
+node* deleteNode(struct node* root, int data) 
+{ 
+    
+    if (root == NULL)
+       return root; 
+  
+    if (data < root->data) 
+        root->left = deleteNode(root->left, data); 
+  
+    else if (data > root->data) 
+        root->right = deleteNode(root->right, data); 
+  
+    else
+    { 
+        if (root->left == NULL) 
+        { 
+            struct node *temp = root->right; 
+            delete(root); 
+            return temp; 
+        } 
+        else if (root->right == NULL) 
+        { 
+            struct node *temp = root->left; 
+            delete(root); 
+            return temp; 
+        } 
+  
+        struct node* temp = minValueNode(root->right); 
+        root->data = temp->data; 
+        root->right = deleteNode(root->right, temp->data); 
+    } 
+    return root; 
+} 
+  
+int main() 
+{ 
+    int ch, temp;
+    struct node *root = NULL, *temps; 
+    cout<<"\n1.Insert\n2.Delete\n3.Inorder\n4.Preorder\n5.Postorder\n6.Find Minimum Value\n7.Find Maximum Value\n8.Search\n9.Exit\n";
+        
+     while(true)
+    {
+        cout<<"\n\nEnter your choice : ";
+        cin>>ch;
+        switch(ch)
+        {
+        case 1:
+            cout<<"\nEnter element to be inserted : ";
+            cin>>ch;
+            root = insert(root, ch);
+            cout<<"\nElements in BST are:";
+            inorder(root);
+            break;
+        case 2:
+            cout<<"\nEnter element to be deleted : ";
+            cin>>ch;
+            root = deleteNode(root,ch);
+            cout<<"\nAfter deletion elements in BST are : ";
+            inorder(root);
+            break;
+        case 3:
+            cout<<"\nInorder Travesal is : ";
+            inorder(root);
+            break;
+        case 4:
+            cout<<"\nPreorder Traversal is : ";
+            preorder(root);
+            break;
+        case 5:
+            cout<<"\nPostorder Traversal is : ";
+            postorder(root);
+            break;
+        case 6:
+            temp = minValueNode(root)->data;
+            cout<<"\nMinimum element is :"<<temp;
+            break;
+        case 7:
+            temp = maxValueNode(root)->data;
+            cout<<"\nMaximum element is :"<<temp;
+            break;
+        case 8:
+            cout<<"\nEnter element to be searched:";
+            cin>>ch;
+            temps = find(root,ch);
+            if(temps==NULL)
+                cout<<"Element is not found";
+            else
+                cout<<"Element "<<temps->data<<" is Found\n";
+            break;
+        case 9:
+            exit(0);
+            break;
+        default:
+            cout<<"\nEnter correct choice:";
+            break;
+        }
+    }
+    getch();
+    return 0; 
+}
